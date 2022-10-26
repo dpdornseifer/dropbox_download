@@ -5,6 +5,8 @@ import aiohttp
 import re
 import tqdm
 import os
+import platform
+
 
 # e.g. DROPBOX_URL ='https://www.dropbox.com/sh/23j4ldkj3jk32m/3lkjdlk3j2k34k4kkdkdjf?dl=0'
 DROPBOX_URL = ''
@@ -39,9 +41,9 @@ async def getrequest(session, url, filetype='text'):
     """ downloads a file specified by url - filetypes are 'text', 'json' or 'binary' """
 
     async with session.get(url) as resp:
-        if filetype is 'text':
+        if filetype == 'text':
             response = await resp.text()
-        elif filetype is 'json':
+        elif filetype == 'json':
             response = await resp.json()
         else:
             response = await resp.read()
@@ -79,8 +81,12 @@ async def asyncprogressbar(coros):
 
 def main():
     """ starts download of the given dropbox directory """
-
-    loop = asyncio.get_event_loop()
+    if platform.system()=='Windows':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        
+    loop = asyncio.new_event_loop()
+    #asyncio.set_event_loop(loop)
+    asyncio.set_event_loop(asyncio.new_event_loop())
     sem = asyncio.Semaphore(MAX_CONCURRENT_DOWNLOADS)
 
     # do the preprocessing (parsing the site for urls and extracting the filenames
