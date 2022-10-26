@@ -6,6 +6,10 @@ do not have enough space in your own Dropbox left to add the content to your per
  
 The script uses `asyncio` and `aiohttp` to make parallel downloads. The maximum number of concurrent downloads is 
 limited by a semaphore. The default limit is 5.
+
+## Differences from the original, master branch
+
+Fixed event loop for Python 3.8+ and added a platform check to set a correct windows policy for compatibility.
  
  
 ## How to use the Script
